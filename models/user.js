@@ -37,6 +37,4 @@ User.init(user, {
     modelName: 'User'
 });
 
-User.sync({alter: true})
-
 export default User
