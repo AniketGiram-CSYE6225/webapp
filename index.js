@@ -23,4 +23,4 @@ app.get('*', function (request, response) {
     return response.status(404).send()
 });
 
-app.listen(8080)
+export default app.listen(8080)

@@ -5,10 +5,10 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  Test_Checker:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Run a one-line script
-        run: exit 1
+      - name: Test Checking
+        run: npm test
         
