@@ -1,20 +1,44 @@
 import express from 'express'
-import db_conn from '../database/index.js'
 import User from '../models/index.js'
-import bcrypt from 'bcrypt';
-const saltRounds = 10;
+import { generateHash, checkHashedPassword, decodeBase64 } from '../utilis/index.js'
+import { signInHeader, signupBody, updateUserBody } from '../validations/index.js'
 const router = express.Router()
+
+router.get("/", async (request, response) => {
+    try {
+        let { success, data } = signInHeader.safeParse(request.headers)
+        if (!success) {
+            return response.status(401).send()
+        }
+        data = decodeBase64(data.authorization.split(" ")[1])
+        const username = data[0]
+        const password = data[1]
+        const _user = await User.findOne({ where: { username: username } });
+        if (_user === null) {
+            console.log('Not found!');
+        } else {
+            const isUserValid = await checkHashedPassword(password, _user.password)
+            if (!isUserValid) {
+                return response.status(401).send()
+            }
+            delete _user["dataValues"]["password"]
+            return response.status(200).json(_user)
+        }
+        return response.status(200).send()
+    } catch (e) {
+        return response.status(503).send()
+    }
+})
 
 router.post("/", async (request, response) => {
     try {
-        await db_conn.authenticate()
-        const user = request.body
-        if (user == null || user == undefined) {
-            return response.status().send()
+        const body = request.body
+        const { success, data } = signupBody.safeParse(body)
+        if (!success) {
+            return response.status(204).send()
         } else {
-            const pass = await bcrypt.hash(user.password, saltRounds)
-            const _user = await User.create({ firstName: user.first_name, lastName: user.last_name, username: user.username, password: pass, account_created: new Date(), account_updated: new Date() })
-            console.log(_user);
+            const pass = await generateHash(data.password)
+            const _user = await User.create({ firstName: data.first_name, lastName: data.last_name, username: data.username, password: pass })
             return response.status(200).json({
                 "id": _user.id
             })
@@ -23,30 +47,45 @@ router.post("/", async (request, response) => {
         if (error.name == "SequelizeUniqueConstraintError") {
             return response.status(400).send()
         }
-        console.log("Error in user module", error);
-        return response.status(500).send()
+        return response.status(503).send()
     }
 })
 
-router.get("/", async (request, response) => {
+router.put("/", async (request, response) => {
     try {
-        await db_conn.authenticate()
-        let data = request.headers
-        data = Buffer.from(data, 'base64').split(":")
-        username = data[0]
-        password = data[1]
-        const _user = await User.findOne({ where: { username: username }, attributes: { exclude: ['password'] } });
-        if (_user === null) {
-            console.log('Not found!');
-        } else {
-            // bcrypt.compare(password, _user);
-            if(_user){
-
-            }
-            return response.status(200).json(_user)
+        let { success, data } = signInHeader.safeParse(request.headers)
+        if (!success) {
+            return response.status(401).send()
         }
-        return response.status(200).send()
-    } catch (e) {
+        console.log(request.body);
+        const userData = updateUserBody.safeParse(request.body)
+        if (!userData.success) {
+            if (userData.error.errors[0].code == "unrecognized_keys") {
+                return response.status(400).send()
+            }
+            return response.status(204).send()
+        }
+        data = decodeBase64(data.authorization.split(" ")[1])
+        const username = data[0]
+        const password = data[1]
+        const _user = await User.findOne({ where: { username: username } });
+        if (_user === null) {
+            return response.status(404).send()
+        } else {
+            const isUserValid = await checkHashedPassword(password, _user.password)
+            if (!isUserValid) {
+                return response.status(401).send()
+            }
+            const user_data = userData.data
+            const pass = await generateHash(user_data.password)
+            const isUserUpdated = await User.update({ firstName: user_data.first_name, lastName: user_data.last_name, password: pass }, { where: { username: username, password: _user.password } })
+            console.log(isUserUpdated);
+            return response.status(200).send()
+        }
+    } catch (error) {
+        if (error.name == "SequelizeUniqueConstraintError") {
+            return response.status(400).send()
+        }
         return response.status(503).send()
     }
 })
