@@ -9,6 +9,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Test Checking
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: dependencies installation
+        run: npm i
+      - name: run node tests
         run: npm test
         
