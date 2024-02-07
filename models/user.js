@@ -1,9 +1,15 @@
-import { DataTypes, Model }  from 'sequelize';
+import { DataTypes, Model, Sequelize } from 'sequelize'
 import sequelize from '../database/index.js'
 
 class User extends Model { }
 
 const user = {
+    id: {
+        type: DataTypes.UUID,
+        defaultValue: Sequelize.UUIDV4,
+        allowNull: false,
+        primaryKey: true
+    },
     firstName: {
         type: DataTypes.STRING
     },

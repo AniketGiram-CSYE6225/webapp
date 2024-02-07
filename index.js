@@ -10,8 +10,7 @@ app.use(middlewares)
 app.use(async (request, response, next) => {
     try {
         await db_conn.sync()
-    }
-    catch (e) {
+    }catch (e) {
         return response.status(503).send()
     } finally {
         next()
