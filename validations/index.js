@@ -14,5 +14,6 @@ export const signInHeader = zod.object({
 export const updateUserBody = zod.object({
     first_name: zod.string(),
     last_name: zod.string(),
-    password: zod.string()
+    password: zod.string(),
+    username: zod.string()
 }).strict()
