@@ -13,7 +13,7 @@ jobs:
         with:
           node-version: 20
       - name: dependencies installation
-        run: npm i
+        run: npm install
       - name: exiting code
         run: exit 0
         
