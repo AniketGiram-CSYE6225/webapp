@@ -5,7 +5,7 @@ on:
     branches: [ main ]
 
 jobs:
-  Test_Checker:
+  CI WorkFlow:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
