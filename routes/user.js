@@ -37,8 +37,9 @@ router.post("/", async (request, response) => {
             return response.status(204).send()
         } else {
             const pass = await generateHash(data.password)
-            await User.create({ firstName: data.first_name, lastName: data.last_name, username: data.username, password: pass })
-            return response.status(200).send()
+            const user = await User.create({ firstName: data.first_name, lastName: data.last_name, username: data.username, password: pass })
+            delete user["dataValues"]["password"]
+            return response.status(200).json(user)
         }
     } catch (error) {
         console.log("err", error);
@@ -70,7 +71,7 @@ router.put("/", async (request, response) => {
         }
         const _user = await User.findOne({ where: { username: username } });
         if (_user === null) {
-            return response.status(404).send()
+            return response.status(400).send()
         } else {
             const isUserValid = await checkHashedPassword(password, _user.password)
             if (!isUserValid) {
@@ -79,7 +80,7 @@ router.put("/", async (request, response) => {
             const user_data = userData.data
             const pass = await generateHash(user_data.password)
             await User.update({ firstName: user_data.first_name, lastName: user_data.last_name, password: pass }, { where: { username: username, password: _user.password } })
-            return response.status(200).send()
+            return response.status(204).send()
         }
     } catch (error) {
         if (error.name == "SequelizeUniqueConstraintError") {
