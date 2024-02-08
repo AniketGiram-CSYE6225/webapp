@@ -4,9 +4,9 @@
   "description": "Health check API Backend",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.js",
-    "start": "node index.js",
-    "test": "node --experimental-vm-modules ./node_modules/.bin/jest --runInBand --detectOpenHandles --forceExit"
+    "dev": "nodemon server.js",
+    "start": "node server.js",
+    "test": "node --experimental-vm-modules ./node_modules/.bin/jest"
   },
   "author": "Aniket Giram",
   "license": "ISC",
