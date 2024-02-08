@@ -1,3 +1,4 @@
+import 'isomorphic-fetch'
 import request from "supertest";
 import app from "../index.js";
 import db_conn from '../database/index.js'
