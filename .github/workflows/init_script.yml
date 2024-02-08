@@ -14,8 +14,6 @@ jobs:
           node-version: 20
       - name: dependencies installation
         run: npm i
-      - name: start server
-        run: npm start
       - name: run node tests
         run: npm test
         
