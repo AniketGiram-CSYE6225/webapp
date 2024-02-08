@@ -34,7 +34,7 @@ router.post("/", async (request, response) => {
         const body = request.body
         const { success, data } = signupBody.safeParse(body)
         if (!success) {
-            return response.status(204).send()
+            return response.status(400).send()
         } else {
             const pass = await generateHash(data.password)
             const user = await User.create({ firstName: data.first_name, lastName: data.last_name, username: data.username, password: pass })
@@ -58,10 +58,7 @@ router.put("/", async (request, response) => {
         }
         const userData = updateUserBody.safeParse(request.body)
         if (!userData.success) {
-            if (userData.error.errors[0].code == "unrecognized_keys") {
-                return response.status(400).send()
-            }
-            return response.status(204).send()
+            return response.status(400).send()
         }
         data = decodeBase64(data.authorization.split(" ")[1])
         const username = data[0]
