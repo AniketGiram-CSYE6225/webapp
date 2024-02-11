@@ -15,6 +15,8 @@ app.use((req, res, next) => {
     }
 });
 
+app.use("/", mainRouter)
+
 app.use(async (request, response, next) => {
     try {
         await db_conn.sync()
@@ -24,8 +26,6 @@ app.use(async (request, response, next) => {
         next()
     }
 })
-
-app.use("/", mainRouter)
 
 app.get('*', function (request, response) {
     return response.status(404).send()
