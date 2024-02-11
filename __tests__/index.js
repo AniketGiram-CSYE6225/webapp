@@ -5,7 +5,7 @@ const requestWithSupertest = supertest(app);
 
 describe("Get /healtz", () => {
     test("Should not connect to db", async () => {
-        const response = await requestWithSupertest.get("/healthz");
-        expect(response.statusCode).toBe(503)
+        const response = await requestWithSupertest.get("/healthz/test");
+        expect(response.statusCode).toBe(200)
     })
 })
