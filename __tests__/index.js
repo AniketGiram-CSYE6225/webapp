@@ -1,4 +1,5 @@
 import supertest from 'supertest'
+import 'isomorphic-fetch'
 import app from '../index.js'
 const requestWithSupertest = supertest(app);
 
