@@ -14,7 +14,7 @@ function createConnection() {
             port: process.env.PORT
         })
     } catch (error) {
-        return response.status(503).send()
+        return error
     }
 }
 
