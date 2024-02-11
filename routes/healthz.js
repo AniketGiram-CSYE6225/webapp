@@ -3,13 +3,12 @@ import db_conn from '../database/index.js'
 const router = express.Router()
 
 router.get("/", async (request, response) => {
-    let statusCode = 200;
     try {
         await db_conn.authenticate()
+        return response.status(200).send()
     } catch (e) {
-        statusCode = 503;
+        return response.status(503).send()
     }
-    return response.status(statusCode).send();
 })
 
 export default router
