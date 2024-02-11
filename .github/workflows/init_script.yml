@@ -14,6 +14,6 @@ jobs:
           node-version: 20
       - name: dependencies installation
         run: npm install
-      - name: exiting code
-        run: exit 0
+      - name: integration testing
+        run: npm test
         
