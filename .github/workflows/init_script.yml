@@ -15,5 +15,5 @@ jobs:
       - name: dependencies installation
         run: npm install
       - name: exiting code
-        run: exit 0
+        run: exit 1
         
