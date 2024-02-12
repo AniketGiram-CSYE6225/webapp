@@ -17,7 +17,7 @@ jobs:
       - name: start mysql service
         run: sudo systemctl start mysql.service
       - name: create a database
-        run: mysql -uroot -h127.0.0.1 -proot -e 'CREATE DATABASE IF NOT EXISTS nscc;'
+        run: mysql -uroot -h127.0.0.1 -proot -e 'CREATE DATABASE IF NOT EXISTS nscc; SHOW DATABASES;'
       - name: integration testing
         env:
           DIALECT: ${{secrets.DIALECT}}
