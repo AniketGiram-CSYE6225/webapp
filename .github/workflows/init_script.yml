@@ -14,6 +14,17 @@ jobs:
           node-version: 20
       - name: dependencies installation
         run: npm install
+      - name: start mysql service
+        run: sudo systemctl start mysql.service
+      - name: create a database
+        run: mysql -uroot -h127.0.0.1 -proot -e 'CREATE DATABASE IF NOT EXISTS nscc;'
       - name: integration testing
+        env:
+          DIALECT: ${{secrets.DIALECT}}
+          DATABASE_NAME: ${{secrets.DATABASE_NAME}}
+          USERNAME: ${{secrets.USERNAME}}
+          PASSWORD: ${{secrets.PASSWORD}}
+          PORT: ${{secrets.PORT}}
         run: npm test
+
         
