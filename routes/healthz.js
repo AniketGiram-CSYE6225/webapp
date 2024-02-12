@@ -11,13 +11,4 @@ router.get("/", async (request, response) => {
     }
 })
 
-router.get("/test", async (request, response) => {
-    try {
-        // await db_conn.authenticate()
-        return response.status(200).send()
-    } catch (e) {
-        return response.status(503).send()
-    }
-})
-
 export default router
