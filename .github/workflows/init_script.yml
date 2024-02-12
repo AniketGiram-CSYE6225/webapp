@@ -18,13 +18,14 @@ jobs:
         run: sudo systemctl start mysql.service
       - name: create a database
         run: mysql -uroot -h127.0.0.1 -proot -e 'CREATE DATABASE IF NOT EXISTS nscc; SHOW DATABASES;'
+      - name: printing secreat
+        run: ${{secrets.DIALECT}}
       - name: integration testing
-        env:
+        env: 
           DIALECT: ${{secrets.DIALECT}}
           DATABASE_NAME: ${{secrets.DATABASE_NAME}}
           USERNAME: ${{secrets.USERNAME}}
           PASSWORD: ${{secrets.PASSWORD}}
-          PORT: ${{secrets.PORT}}
         run: npm test
 
         
