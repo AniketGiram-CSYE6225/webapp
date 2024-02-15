@@ -1,5 +1,5 @@
 import express from 'express'
-import User from '../models/index.js'
+import { default as User } from '../models/index.js'
 import { generateHash, checkHashedPassword, decodeBase64 } from '../utilis/index.js'
 import { signInHeader, signupBody, updateUserBody } from '../validations/index.js'
 const router = express.Router()
@@ -39,7 +39,7 @@ router.post("/", async (request, response) => {
             const pass = await generateHash(data.password)
             const user = await User.create({ firstName: data.first_name, lastName: data.last_name, username: data.username, password: pass })
             delete user["dataValues"]["password"]
-            return response.status(200).json(user)
+            return response.status(201).json(user)
         }
     } catch (error) {
         console.log("err", error);
@@ -63,9 +63,9 @@ router.put("/", async (request, response) => {
         data = decodeBase64(data.authorization.split(" ")[1])
         const username = data[0]
         const password = data[1]
-        if(username != userData.data.username){
-            return response.status(400).send()
-        }
+        // if(username != userData.data.username){
+        //     return response.status(400).send()
+        // }
         const _user = await User.findOne({ where: { username: username } });
         if (_user === null) {
             return response.status(400).send()
