@@ -3,7 +3,7 @@ import app from '../index.js'
 const requestWithSupertest = supertest(app);
 
 describe("Get /healtz", () => {
-    test("connect to db", async () => {
+    test("should connect to db", async () => {
         const response = await requestWithSupertest.get("/healthz");
         expect(response.statusCode).toBe(200)
     })

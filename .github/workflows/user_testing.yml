@@ -1,11 +1,11 @@
-name: WebApp CI
+name: UserModuleTesting CI
 
 on:
   pull_request:
     branches: [ main ]
 
 jobs:
-  CI_WorkFlow:
+  User_CI_WorkFlow:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -24,6 +24,4 @@ jobs:
           DB_NAME: ${{secrets.DATABASE_NAME}}
           DB_USERNAME: ${{secrets.USERNAME}}
           DB_PASSWORD: ${{secrets.PASSWORD}}
-        run: npm test
-
-        
+        run: npm test -t "user_testing"
