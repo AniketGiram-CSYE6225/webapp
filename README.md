@@ -1,16 +1,8 @@
 # webapp
 
 # Steps to setup the repo for demo.
-## scp zip file into digitalocean droplet.
-``` bash
-scp -i ~/.ssh/id_rsa.pub ./Aniket_Giram_002808219_02.zip USER@SERVER:/home/USER/FILENAME
-```
 
-## SSH into VM to start the demo
-```bash
-ssh -i ~/.ssh/id_rsa.pub root@IP
-```
-
+# Launch the droplet in digitalocean and ssh into it as a root user
 
 ## Create a user for demo purposes.
 As we login as root. We can execute  the following commands to create a new user.
@@ -25,13 +17,22 @@ Add the demo user to the sudo group.
 ```bash
 usermod -G wheel -a demo_user
 ```
-
-Switch user to demo user for the demo using the following commands
+Copy `.ssh` folder inside newely created user 
 ```bash
-su - demo_user
+cp -rfv ~/.ssh/ /home/demo_user/
 ```
 
+give the ownership to the folder
+```bash
+chown -R demo_user:demo_user /home/demo_user/.ssh
+```
 
+# Login to digitalocean as a demouser
+
+## scp zip file into digitalocean droplet.
+``` bash
+scp -i ~/.ssh/id_rsa ./Aniket_Giram_002808219_02.zip demo_user@IP:/home/demo_user/Aniket_Giram_002808219_01.zip
+```
 
 ## Install dependencies
 
@@ -69,6 +70,11 @@ GRANT ALL PRIVILEGES ON nscc.* TO 'user'@'localhost' WITH GRANT OPTION;
 # Run this to update the grant tables in mysql
 FLUSH PRIVILEGES;
 
+```
+
+# install zip unzip package
+```bash
+yum install zip unzip
 ```
 
 # Now for the code part.
