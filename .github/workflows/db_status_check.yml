@@ -1,0 +1,20 @@
+name: WebApp CI
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  CI_WorkFlow:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: dependencies installation
+        run: npm install
+      - name: integration testing
+        run: npm test -t "db_status_check"
+
+        
