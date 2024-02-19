@@ -2,7 +2,7 @@
 
 # Steps to setup the repo for demo.
 
-# Launch the droplet in digitalocean and ssh into it as a root user
+# Launch the droplet in Digitalocean and ssh into it as a root user
 
 ## Create a user for demo purposes.
 As we login as root. We can execute  the following commands to create a new user.
