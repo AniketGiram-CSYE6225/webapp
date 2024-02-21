@@ -23,7 +23,7 @@ jobs:
       - name: creating env file
         env: 
           ENVIRONMENT: ${{secrets.ENVIRONMENT}}
-        run: echo ${{ ENVIRONMENT }} > .env
+        run: echo "$ENVIRONMENT" > .env
       - name: creating zip
         run: |
           rm -rf webapp.zip
