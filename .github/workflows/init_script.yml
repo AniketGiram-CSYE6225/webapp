@@ -16,5 +16,3 @@ jobs:
         run: npm install
       - name: exit test
         run: exit 0
-
-        
