@@ -21,7 +21,7 @@ jobs:
       - name: setting up gcp
         uses: 'google-github-actions/setup-gcloud@v2'
       - name: creating env file
-        run: ${{ secrets.ENV_PRODUCTION_FILE }} > .env
+        run: ${{ secrets.ENVIRONMENT }} > .env
       - name: creating zip
         run: zip -r webapp.zip . -x ".git/" ".github/"
       - name: Run `packer init`
