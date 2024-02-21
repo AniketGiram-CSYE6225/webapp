@@ -16,39 +16,22 @@ sudo dnf module install nodejs:20 -y
 
 sudo dnf install mysql-server -y
 
-sudo systemctl start mysqld.service
-
-sudo systemctl enable mysqld.service
-
-echo "mysql service status"
-
-sudo systemctl status mysqld.service
-
-sudo mysql < "/tmp/webapp/db.sql"
-
 # move webapp from tmp to opt
 sudo mv /tmp/webapp /opt/
 
 # sudo mv /tmp/.env /opt/webapp/
 
+# change owner of webapp to csye6225
 sudo chown -R csye6225:csye6225 /opt/webapp
 
 # move service file to /etc/systemd/system
 sudo mv /opt/webapp/csye6225.service /etc/systemd/system/
 
+# change owner of csye6225.service file to csye6225
 sudo chown -R csye6225:csye6225 /etc/systemd/system/csye6225.service
 
 cd /opt/webapp
 
 sudo npm install
 
-# starting systemd
-sudo systemctl daemon-reload
-
-sudo systemctl enable csye6225.service
-
-sudo systemctl start csye6225.service
-
-sudo systemctl status csye6225.service
-
-echo "completed all steps"
+echo "completed all steps in init.sh"

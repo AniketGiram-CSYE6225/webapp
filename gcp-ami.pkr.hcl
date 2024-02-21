@@ -43,6 +43,10 @@ variable "img_desc" {
   type = string
 }
 
+variable "image_storage_locations" {
+  type = string
+}
+
 source "googlecompute" "custom-image-ami" {
   project_id              = var.project_id
   image_name              = "${var.image_name}-{{timestamp}}"
@@ -54,7 +58,7 @@ source "googlecompute" "custom-image-ami" {
   disk_type               = var.disk_type
   disk_size               = var.disk_size
   zone                    = var.zone
-  image_storage_locations = ["us"]
+  image_storage_locations = [var.image_storage_locations]
 }
 
 build {
@@ -64,6 +68,6 @@ build {
     destination = "/tmp/webapp.zip"
   }
   provisioner "shell" {
-    scripts = ["init.sh"]
+    scripts = ["scripts/init.sh", "scripts/db-setup.sh", "scripts/csye6225-service.sh"]
   }
 }
