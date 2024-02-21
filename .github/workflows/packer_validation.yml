@@ -1,4 +1,4 @@
-name: WebApp CI
+name: Packer Validation CI
 
 on:
   pull_request:
