@@ -30,7 +30,7 @@ jobs:
         run: |
           rm gcp-ami.pkrvars.hcl
           echo "$PACKER_ENVIRONMENT" > gcp-ami.pkrvars.hcl
-      - name: creating zip
+      - name: creating zip file
         run: |
           rm -rf webapp.zip
           zip -r webapp.zip . -x ".git/*" ".github/*"
