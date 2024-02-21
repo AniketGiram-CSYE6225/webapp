@@ -8,6 +8,6 @@ echo "mysql service status"
 
 sudo systemctl status mysqld.service
 
-sudo mysql < "/tmp/webapp/db.sql"
+sudo mysql < "/opt/webapp/db.sql"
 
 echo "completed all steps in db-setup.sh"
