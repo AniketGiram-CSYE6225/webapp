@@ -1,7 +1,7 @@
-name: Packer Validation CI
+name: Create GCP AMI CI
 
 on:
-  pull_request:
+  push:
     branches: [ main ]
 
 jobs:
@@ -14,11 +14,19 @@ jobs:
           node-version: 20
       - name: setting up packer
         uses: hashicorp/setup-packer@main
+      - name: Authentication for gcloud
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+      - name: setting up gcp
+        uses: 'google-github-actions/setup-gcloud@v2'
       - name: creating zip
         run: zip -r webapp.zip .
       - name: Run `packer init`
         run: "packer init ./gcp-ami.pkr.hcl"
       - name: Run `packer format`
-        run: "packer fmt -check ./gcp-ami.pkr.hcl"
+        run: "packer fmt ./gcp-ami.pkr.hcl"
       - name: Run `packer validate`
         run: "packer validate ./gcp-ami.pkr.hcl"
+      - name: Build Packer Image
+        run: "packer build ./gcp-ami.pkr.hcl"     
