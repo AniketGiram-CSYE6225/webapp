@@ -27,9 +27,7 @@ jobs:
       - name: creating packer env file
         env:
           PACKER_ENVIRONMENT: ${{secrets.PACKER_ENVIRONMENT}}
-        run: |
-          rm gcp-ami.pkrvars.hcl
-          echo "$PACKER_ENVIRONMENT" > gcp-ami.pkrvars.hcl
+        run: echo "$PACKER_ENVIRONMENT" > gcp-ami.pkrvars.hcl
       - name: creating zip file
         run: |
           rm -rf webapp.zip
