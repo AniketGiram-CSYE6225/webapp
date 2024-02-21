@@ -34,7 +34,7 @@ sudo mv /tmp/.env /opt/webapp/
 sudo chown -R csye6225:csye6225 /opt/webapp
 
 # move service file to /etc/systemd/system
-sudo mv /tmp/csye6225.service /etc/systemd/system/
+sudo mv /opt/webapp/csye6225.service /etc/systemd/system/
 
 sudo chown -R csye6225:csye6225 /etc/systemd/system/csye6225.service
 
