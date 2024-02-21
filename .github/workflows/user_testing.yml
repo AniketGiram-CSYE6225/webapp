@@ -3,8 +3,6 @@ name: UserModuleTesting CI
 on:
   pull_request:
     branches: [ main ]
-  push:
-    branches: [ main ]
 
 jobs:
   User_CI_WorkFlow:
