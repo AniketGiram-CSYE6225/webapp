@@ -20,8 +20,10 @@ jobs:
           credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
       - name: setting up gcp
         uses: 'google-github-actions/setup-gcloud@v2'
+      - name: creating env file
+        run: ${{ secrets.ENV_PRODUCTION_FILE }} > .env
       - name: creating zip
-        run: zip -r webapp.zip .
+        run: zip -r webapp.zip . -x ".git/" ".github/"
       - name: Run `packer init`
         run: "packer init ./gcp-ami.pkr.hcl"
       - name: Run `packer format`
