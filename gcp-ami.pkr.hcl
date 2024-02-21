@@ -57,14 +57,14 @@ build {
     source      = "./webapp.zip"
     destination = "/tmp/webapp.zip"
   }
-  provisioner "file" {
-    source      = ".env"
-    destination = "/tmp/"
-  }
-  provisioner "file" {
-    source      = "csye6225.service"
-    destination = "/tmp/"
-  }
+  // provisioner "file" {
+  //   source      = ".env"
+  //   destination = "/tmp/"
+  // }
+  // provisioner "file" {
+  //   source      = "csye6225.service"
+  //   destination = "/tmp/"
+  // }
   provisioner "shell" {
     scripts = ["init.sh"]
   }
