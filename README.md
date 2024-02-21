@@ -107,3 +107,29 @@ PORT=
 ```bash
 npm start
 ```
+
+
+```bash
+gcloud iam service-accounts create packer \
+  --project "YOUR_GCP_PROJECT" \
+  --description="Packer Service Account" \
+  --display-name="Packer Service Account"
+```
+
+```bash
+gcloud projects add-iam-policy-binding YOUR_GCP_PROJECT \
+    --member=serviceAccount:packer@YOUR_GCP_PROJECT.iam.gserviceaccount.com \
+    --role=roles/compute.instanceAdmin.v1
+```
+
+```bash
+gcloud projects add-iam-policy-binding YOUR_GCP_PROJECT \
+    --member=serviceAccount:packer@YOUR_GCP_PROJECT.iam.gserviceaccount.com \
+    --role=roles/iam.serviceAccountUser
+```
+
+```bash
+gcloud projects add-iam-policy-binding YOUR_GCP_PROJECT \
+    --member=serviceAccount:packer@YOUR_GCP_PROJECT.iam.gserviceaccount.com \
+    --role=roles/iap.tunnelResourceAccessor
+```
