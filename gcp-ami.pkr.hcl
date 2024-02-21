@@ -8,41 +8,47 @@ packer {
 }
 
 variable "project_id" {
-  type    = string
-  default = "nscc-dev-414822"
+  type = string
 }
 
 variable "source_image_family" {
-  type    = string
-  default = "centos-stream-8"
+  type = string
 }
 
 variable "ssh_username" {
-  type    = string
-  default = "packer"
+  type = string
 }
 
 variable "zone" {
-  type    = string
-  default = "us-east1-b"
+  type = string
 }
 
 variable "disk_size" {
-  type    = number
-  default = 20
+  type = number
 }
 
 variable "disk_type" {
-  type    = string
-  default = "pd-standard"
+  type = string
+}
+
+variable "image_name" {
+  type = string
+}
+
+variable "image_family" {
+  type = string
+}
+
+variable "img_desc" {
+  type = string
 }
 
 source "googlecompute" "custom-image-ami" {
   project_id              = var.project_id
-  image_name              = "nscc-{{timestamp}}"
-  image_description       = "NSCC Custom Image"
+  image_name              = "${var.image_name}-{{timestamp}}"
+  image_description       = var.img_desc
   source_image_family     = var.source_image_family
-  image_family            = "nscc-custom-image"
+  image_family            = var.image_family
   image_project_id        = var.project_id
   ssh_username            = var.ssh_username
   disk_type               = var.disk_type
@@ -57,14 +63,6 @@ build {
     source      = "./webapp.zip"
     destination = "/tmp/webapp.zip"
   }
-  // provisioner "file" {
-  //   source      = ".env"
-  //   destination = "/tmp/"
-  // }
-  // provisioner "file" {
-  //   source      = "csye6225.service"
-  //   destination = "/tmp/"
-  // }
   provisioner "shell" {
     scripts = ["init.sh"]
   }

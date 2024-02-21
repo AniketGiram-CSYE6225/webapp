@@ -24,6 +24,12 @@ jobs:
         env: 
           ENVIRONMENT: ${{secrets.ENVIRONMENT}}
         run: echo "$ENVIRONMENT" > .env
+      - name: creating packer env file
+        env:
+          PACKER_ENVIRONMENT: ${{secrets.PACKER_ENVIRONMENT}}
+        run: |
+          rm gcp-ami.pkrvars.hcl
+          echo "$PACKER_ENVIRONMENT" > gcp-ami.pkrvars.hcl
       - name: creating zip
         run: |
           rm -rf webapp.zip
@@ -31,8 +37,8 @@ jobs:
       - name: Run `packer init`
         run: "packer init ./gcp-ami.pkr.hcl"
       - name: Run `packer format`
-        run: "packer fmt ./gcp-ami.pkr.hcl"
+        run: "packer fmt -var-file="gcp-ami.pkrvars.hcl" ./gcp-ami.pkr.hcl"
       - name: Run `packer validate`
-        run: "packer validate ./gcp-ami.pkr.hcl"
+        run: "packer validate -var-file="gcp-ami.pkrvars.hcl" ./gcp-ami.pkr.hcl"
       - name: Build Packer Image
-        run: "packer build ./gcp-ami.pkr.hcl"     
+        run: "packer build -var-file="gcp-ami.pkrvars.hcl" ./gcp-ami.pkr.hcl"     
