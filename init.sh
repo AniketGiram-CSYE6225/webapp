@@ -29,7 +29,7 @@ sudo mysql < "/tmp/webapp/db.sql"
 # move webapp from tmp to opt
 sudo mv /tmp/webapp /opt/
 
-sudo mv /tmp/.env /opt/webapp/
+# sudo mv /tmp/.env /opt/webapp/
 
 sudo chown -R csye6225:csye6225 /opt/webapp
 
