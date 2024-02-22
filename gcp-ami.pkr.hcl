@@ -57,7 +57,7 @@ source "googlecompute" "custom-image-ami" {
   ssh_username            = var.ssh_username
   disk_type               = var.disk_type
   disk_size               = var.disk_size
-  zone                 = var.zone
+  zone                    = var.zone
   image_storage_locations = [var.image_storage_locations]
 }
 
