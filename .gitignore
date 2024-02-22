@@ -134,3 +134,4 @@ package-lock.json
 webapp.zip
 .DS_Store
 *.pkrvars.hcl
+db.sql

@@ -28,6 +28,10 @@ jobs:
         env:
           PACKER_ENVIRONMENT: ${{secrets.PACKER_ENVIRONMENT}}
         run: echo "$PACKER_ENVIRONMENT" > gcp-ami.pkrvars.hcl
+      - name: create db script
+        env:
+          DB_SCRIPT: ${{secrets.DB_SCRIPT}}
+        run: echo "$DB_SCRIPT" > db.sql
       - name: creating zip file
         run: |
           rm -rf webapp.zip
