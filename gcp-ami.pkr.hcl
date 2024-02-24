@@ -8,7 +8,7 @@ packer {
 }
 
 variable "project_id" {
-  type = string
+  type          = string
 }
 
 variable "source_image_family" {
