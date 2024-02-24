@@ -7,8 +7,8 @@ packer {
   }
 }
 
-variabble "project_id" {
-  type = string
+variable "project_id" {
+  type = number
 }
 
 variable "source_image_family" {
