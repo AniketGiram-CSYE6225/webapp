@@ -20,10 +20,6 @@ jobs:
           credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
       - name: setting up gcp
         uses: 'google-github-actions/setup-gcloud@v2'
-      # - name: creating env file
-      #   env: 
-      #     ENVIRONMENT: ${{secrets.ENVIRONMENT}}
-        run: echo "$ENVIRONMENT" > .env
       - name: creating packer env file
         env:
           PACKER_ENVIRONMENT: ${{secrets.PACKER_ENVIRONMENT}}
