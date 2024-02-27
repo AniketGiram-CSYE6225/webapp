@@ -68,6 +68,10 @@ build {
     destination = "/tmp/webapp.zip"
   }
   provisioner "shell" {
-    scripts = ["scripts/init.sh", "scripts/db-setup.sh", "scripts/csye6225-service.sh"]
+    scripts = ["scripts/init.sh", "scripts/csye6225-service.sh"]
   }
 }
+
+// provisioner "shell" {
+//     scripts = ["scripts/init.sh", "scripts/db-setup.sh", "scripts/csye6225-service.sh"]
+//   }

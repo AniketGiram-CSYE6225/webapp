@@ -14,7 +14,7 @@ unzip /tmp/webapp.zip -d /tmp/webapp
 
 sudo dnf module install nodejs:20 -y
 
-sudo dnf install mysql-server -y
+# sudo dnf install mysql-server -y
 
 # move webapp from tmp to opt
 sudo mv /tmp/webapp /opt/
