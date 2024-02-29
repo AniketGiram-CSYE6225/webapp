@@ -14,12 +14,8 @@ unzip /tmp/webapp.zip -d /tmp/webapp
 
 sudo dnf module install nodejs:20 -y
 
-# sudo dnf install mysql-server -y
-
 # move webapp from tmp to opt
 sudo mv /tmp/webapp /opt/
-
-# sudo mv /tmp/.env /opt/webapp/
 
 # change owner of webapp to csye6225
 sudo chown -R csye6225:csye6225 /opt/webapp
