@@ -1,6 +1,6 @@
 [Unit]
 Description=CSYE 6225 App
-After=network.target google-startup-scripts.service
+After=network.target
 
 [Service]
 Type=simple
