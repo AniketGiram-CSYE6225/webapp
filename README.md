@@ -1,6 +1,6 @@
 # webapp
 
-# Steps to setup the repo for demo.
+# Steps to setup the repo for demo
 
 # Launch the droplet in digitalocean and ssh into it as a root user
 
