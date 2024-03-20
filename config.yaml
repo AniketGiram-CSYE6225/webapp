@@ -1,0 +1,17 @@
+logging:
+  receivers:
+    nscc-receiver:
+      type: files
+      include_paths:
+        - /var/logs/webapp/nscc.log
+      record_log_file_path: true
+  processors:
+    nscc-processor:
+      type: parse_json
+      time_key: time
+      time_format: "%Y-%m-%dT%H:%M:%S.%L%Z"
+  service:
+    pipelines:
+      default_pipeline:
+        receivers: [nscc-receiver]
+        processors: [nscc-processor]
