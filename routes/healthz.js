@@ -10,7 +10,7 @@ router.get("/", async (request, response) => {
         logger.debug("Application is healthy")
         return response.status(200).send()
     } catch (e) {
-        logger.error(`error ${e}`)
+        logger.error(`error ${e}`);
         logger.debug("Application is not healthy")
         return response.status(503).send()
     }
