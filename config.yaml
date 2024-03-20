@@ -3,7 +3,7 @@ logging:
     nscc-receiver:
       type: files
       include_paths:
-        - /var/log/webapp/nscc.log
+        - /var/log/webapp/nscc-dev.log
       record_log_file_path: true
   processors:
     nscc-processor:
