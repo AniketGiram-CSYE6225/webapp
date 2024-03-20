@@ -1,8 +1,5 @@
 import winston from "winston"
 const { createLogger, format } = winston;
-// import {LoggingWinston} from "@google-cloud/logging-winston";
-
-// const loggingWinston = new LoggingWinston();
 
 export const logger = createLogger({
   format: format.combine(
@@ -19,4 +16,3 @@ export const logger = createLogger({
     new winston.transports.File({ filename: '/var/log/webapp/nscc-webapp.log' })
   ]
 });
-// loggingWinston,
