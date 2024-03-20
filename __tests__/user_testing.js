@@ -1,6 +1,6 @@
 import supertest from 'supertest'
 import app from '../index.js'
-import {logger} from './logger/index.js'
+import { logger } from '../logger/index.js'
 const requestWithSupertest = supertest(app);
 
 describe("Get /healtz", () => {
