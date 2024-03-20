@@ -1,7 +1,7 @@
 import express from 'express'
 import db_conn from '../database/index.js'
 const router = express.Router()
-import {logger} from './logger/index.js'
+import {logger} from '../logger/index.js'
 
 router.get("/", async (request, response) => {
     try {
