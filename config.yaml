@@ -10,7 +10,7 @@ logging:
       type: parse_json
       time_key: time
       time_format: "%Y-%m-%d %H:%M:%S"
-    move_sevirity:
+    move_severity:
       type: modify_fields
       fields:
         severity:
@@ -19,4 +19,4 @@ logging:
     pipelines:
       default_pipeline:
         receivers: [nscc-receiver]
-        processors: [nscc-processor]
+        processors: [nscc-processor, move_severity]
