@@ -7,6 +7,10 @@ sudo mkdir webapp
 
 cd webapp
 
+sudo touch nscc-webapp.log
+
+sudo chown -R csye6225:csye6225 /var/log/webapp/nscc-webapp.log
+
 sudo curl -sSO https://dl.google.com/cloudagents/add-google-cloud-ops-agent-repo.sh
 
 sudo bash add-google-cloud-ops-agent-repo.sh --also-install
