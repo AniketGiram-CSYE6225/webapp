@@ -20,6 +20,9 @@ jobs:
         run: sudo systemctl start mysql.service
       - name: create a database
         run: mysql -uroot -h127.0.0.1 -proot -e 'CREATE DATABASE IF NOT EXISTS nscc;'
+      - name: Create webapp folder for logs
+        run: |
+          mkdir -p /var/log/webapp
       - name: integration testing
         env: 
           DIALECT: ${{secrets.DIALECT}}
