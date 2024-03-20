@@ -10,6 +10,6 @@ export const logger = winston.createLogger({
         // - Write all logs with importance level of `info` or less to `combined.log`
         //
         // new winston.transports.File({ filename: 'error.log', level: 'error' }),
-        new winston.transports.File({ filename: '/var/logs/webapp/nscc-dev.log' }),
+        new winston.transports.File({ filename: '/var/log/webapp/nscc-dev.log' }),
     ],
 });
