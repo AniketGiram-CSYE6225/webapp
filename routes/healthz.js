@@ -6,8 +6,8 @@ import {logger} from '../logger/index.js'
 router.get("/", async (request, response) => {
     try {
         await db_conn.authenticate()
-        logger.info("Health is Good")
         logger.debug("Application is healthy")
+        logger.info("Health is Good")
         return response.status(200).send()
     } catch (e) {
         logger.error(`error ${e}`);
