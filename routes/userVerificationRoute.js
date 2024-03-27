@@ -5,7 +5,7 @@ import { User, EmailTrack } from '../models/index.js'
 
 router.get("/", async (request, response) => {
     const userData = request.query;
-    logger.debug(`Verifying User, data: ${userData}`)
+    logger.debug(`Verifying User, data: ${userData['username']}`)
     const user = await User.findOne({ where: { id: userData.userId } });
     const user_email_track = await EmailTrack.findOne({ where: { userId: userData.userId } })
     if (user == null) {
