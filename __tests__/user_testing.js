@@ -2,6 +2,7 @@ import supertest from 'supertest'
 import app from '../index.js'
 import { logger } from '../logger/index.js'
 const requestWithSupertest = supertest(app);
+import EmailTrack from '../models/email_track.js'
 
 describe("Get /healtz", () => {
     test("should connect to db", async () => {
@@ -23,6 +24,11 @@ describe("Post /v1/user", () => {
             .set('Content-Type', 'application/json')
             .set('Accept', 'application/json')
         expect(createdUser.statusCode).toBe(201)
+
+        await EmailTrack.create({ userId: createdUser.body['id'], emailStatus: "EMAIL_SENT" })
+
+        const updateUserStatus = await requestWithSupertest.get(`/v1/userVerification?username=${createdUser.body['username']}&userId=${createdUser.body['id']}&firstName=${createdUser.body['first_name']}`)
+        expect(updateUserStatus.statusCode).toBe(200)
 
         const duplicateUser = await requestWithSupertest.post("/v1/user")
             .send(payload)

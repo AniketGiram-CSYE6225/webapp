@@ -13,6 +13,7 @@ export const logger = createLogger({
     })
   ),
   transports: [
-    new winston.transports.File({ filename: '/var/log/webapp/nscc-webapp.log', level: 'debug' })
+    // new winston.transports.File({ filename: '/var/log/webapp/nscc-webapp.log', level: 'debug' })
+    new winston.transports.File({ filename: 'nscc-webapp.log', level: 'debug' })
   ]
 });
