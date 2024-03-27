@@ -27,6 +27,10 @@ const user = {
     password: {
         type: DataTypes.STRING,
     },
+    account_verified: {
+        type: DataTypes.BOOLEAN,
+        default: false
+    },
     account_created: {
         type: DataTypes.DATE
     },

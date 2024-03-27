@@ -1,6 +1,6 @@
 import express from 'express'
-import { default as User } from '../models/index.js'
-import { generateHash, checkHashedPassword, decodeBase64 } from '../utilis/index.js'
+import { User } from '../models/index.js'
+import { generateHash, checkHashedPassword, decodeBase64, sendVerificationEmail } from '../utilis/index.js'
 import { signInHeader, signupBody, updateUserBody } from '../validations/index.js'
 const router = express.Router()
 import { logger } from '../logger/index.js'
@@ -28,7 +28,12 @@ router.get("/", async (request, response) => {
                 logger.error(`Wrong credentials. Cannot authorize the user.`);
                 return response.status(401).send()
             }
+            if (!_user["dataValues"]["account_verified"]) {
+                logger.error(`User is not verified. Cannot process the request`);
+                return response.status(403).send()
+            }
             delete _user["dataValues"]["password"]
+            delete _user["dataValues"]["account_verified"]
             logger.warn("Deleting password from user object")
             logger.debug(`User data fetched successfully. Username: ${_user['username']}`);
             logger.info(`User ${_user['username']} fetched its data successfully.`);
@@ -52,11 +57,13 @@ router.post("/", async (request, response) => {
             logger.debug("generating hash password")
             const pass = await generateHash(data.password)
             logger.debug("creating a user")
-            const user = await User.create({ firstName: data.first_name, lastName: data.last_name, username: data.username, password: pass })
+            const user = await User.create({ firstName: data.first_name, lastName: data.last_name, username: data.username, password: pass, account_verified: false })
             logger.warn("Deleting password from user object")
             delete user["dataValues"]["password"]
+            delete user["dataValues"]["account_verified"]
             logger.debug("User Created")
-            logger.error(`User ${user['username']} created Successfully.`);
+            logger.info(`User ${user['username']} created Successfully.`);
+            await sendVerificationEmail(user)
             return response.status(201).json(user)
         }
     } catch (error) {
@@ -66,6 +73,7 @@ router.post("/", async (request, response) => {
             logger.error(`Couldn't create the user. Error: ${error.name}`);
             return response.status(400).send()
         }
+        console.log("error", error)
         return response.status(503).send()
     }
 })
@@ -97,6 +105,10 @@ router.put("/", async (request, response) => {
             if (!isUserValid) {
                 logger.error(`Wrong credentials. Cannot authorize the user.`);
                 return response.status(401).send()
+            }
+            if (!_user["dataValues"]["account_verified"]) {
+                logger.error(`User is not verified. Cannot process the request`);
+                return response.status(403).send()
             }
             const user_data = userData.data
             const pass = await generateHash(user_data.password)
