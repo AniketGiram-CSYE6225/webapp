@@ -18,13 +18,13 @@ router.get("/", async (request, response) => {
         logger.error(`User record in email table not found. Update failed`);
         return response.status(400).send()
     }
-    console.log(`User_data`, user)
-    console.log(`email_track`, user_email_track);
-    console.log("time", user_email_track["emailSentTime"], typeof user_email_track["emailSentTime"]);
+    if (new Date() > user_email_track["email_expiry_time"]){
+        return response.sendStatus(400).json({"message": "Verification link expired"})
+    }
     await User.update({ account_verified: true }, { where: { id: userData.userId } })
     await EmailTrack.update({ emailStatus: "EMAIL_VERIFIED" }, { where: { userId: userData.userId } })
     logger.info(`User status Updated Successfully`);
-    response.sendStatus(200)
+    return response.sendStatus(200)
 })
 
 export default router
