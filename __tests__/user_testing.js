@@ -25,7 +25,7 @@ describe("Post /v1/user", () => {
             .set('Accept', 'application/json')
         expect(createdUser.statusCode).toBe(201)
 
-        await EmailTrack.create({ userId: createdUser.body['id'], emailStatus: "EMAIL_SENT" })
+        await EmailTrack.create({ userId: createdUser.body['id'], emailStatus: "EMAIL_SENT", email_expiry_time: new Date(new Date().getTime() + (2 * 60 * 1000))})
 
         const updateUserStatus = await requestWithSupertest.get(`/v1/userVerification?username=${createdUser.body['username']}&userId=${createdUser.body['id']}&firstName=${createdUser.body['first_name']}`)
         expect(updateUserStatus.statusCode).toBe(200)
