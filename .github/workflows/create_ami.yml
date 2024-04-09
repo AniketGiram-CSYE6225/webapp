@@ -37,17 +37,12 @@ jobs:
       - name: Run `packer validate`
         run: "packer validate -var-file=gcp-ami.pkrvars.hcl ./gcp-ami.pkr.hcl"
       - name: Build Packer Image
+        run: "packer build -var-file=gcp-ami.pkrvars.hcl ./gcp-ami.pkr.hcl"
+      - name: Get Latest Image ID
         run: |
-          "packer build -machine-readable -var-file=gcp-ami.pkrvars.hcl ./gcp-ami.pkr.hcl" | tee build.log
-          image_id=$(grep -oP '(?<=artifact,0,id,).*(?=,)' build.log)
-          echo $image_id > latest_image_id.txt    
-        id: packer_image_build_id
+          latest_image_id=$(gcloud compute images list --format="value(NAME)" --filter="name~'nscc-*'" --sort-by=~creationTimestamp | head -n 1)
+          echo "::set-output name=latest_image_id::$latest_image_id"
+        # "gcloud compute images list --format="value(NAME)" --filter="name~'nscc-*'" --sort-by=~creationTimestamp | head -n 1"
       - name: Use Latest Image ID
         run: |
-          latest_image_id=$(<latest_image_id.txt)
-          echo "Latest Image ID: $latest_image_id" 
-      - name: Create Instance Template
-        run: |
-          gcloud compute instance-templates create new-template-with-latest-version \
-            --source-instance-template=webapp-template \
-            --image=${{ steps.packer_image_build_id.outputs.latest_image_id }}
+          echo "Latest Image ID is ${{ steps.get_latest_image.outputs.latest_image }}"
