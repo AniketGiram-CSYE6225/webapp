@@ -37,12 +37,7 @@ jobs:
       - name: Run `packer validate`
         run: "packer validate -var-file=gcp-ami.pkrvars.hcl ./gcp-ami.pkr.hcl"
       - name: Build Packer Image
-        run: "packer build -var-file=gcp-ami.pkrvars.hcl ./gcp-ami.pkr.hcl"
-      - name: Get Latest Image ID
         run: |
-          latest_image_id=$(gcloud compute images list --format="value(NAME)" --filter="name~'nscc-*'" --sort-by=~creationTimestamp | head -n 1)
-          echo "::set-output name=latest_image_id::$latest_image_id"
-        # "gcloud compute images list --format="value(NAME)" --filter="name~'nscc-*'" --sort-by=~creationTimestamp | head -n 1"
-      - name: Use Latest Image ID
-        run: |
-          echo "Latest Image ID is ${{ steps.get_latest_image.outputs.latest_image }}"
+          AMI_ID=$(packer build -var-file=gcp-ami.pkrvars.hcl ./gcp-ami.pkr.hcl | awk -F, '$0 ~/artifact,0,id/ {print $6}')
+          echo "AMI_ID is =$AMI_ID" >> $GITHUB_ENV
+          echo "::set-output name=ami_id::$AMI_ID"
