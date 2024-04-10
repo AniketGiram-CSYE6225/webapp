@@ -36,8 +36,8 @@ jobs:
         run: "packer fmt -var-file=gcp-ami.pkrvars.hcl ./gcp-ami.pkr.hcl"
       - name: Run `packer validate`
         run: "packer validate -var-file=gcp-ami.pkrvars.hcl ./gcp-ami.pkr.hcl"
-      - name: Build Packer Image
-        run: "packer build -var-file=gcp-ami.pkrvars.hcl ./gcp-ami.pkr.hcl"
+      # - name: Build Packer Image
+      #   run: "packer build -var-file=gcp-ami.pkrvars.hcl ./gcp-ami.pkr.hcl"
       - name: Get Secret value
         run: |
           gcloud secrets versions access latest --secret=webapp-secret --format='value(payload.data)' > webapp-secret.json
