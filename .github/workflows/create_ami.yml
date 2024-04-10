@@ -36,47 +36,47 @@ jobs:
         run: "packer fmt -var-file=gcp-ami.pkrvars.hcl ./gcp-ami.pkr.hcl"
       - name: Run `packer validate`
         run: "packer validate -var-file=gcp-ami.pkrvars.hcl ./gcp-ami.pkr.hcl"
-      # - name: Build Packer Image
-      #   run: |
-      #     packer build -var-file=gcp-ami.pkrvars.hcl ./gcp-ami.pkr.hcl | tee /tmp/packer-output.txt
-      #     IMAGE_NAME=$(grep project /tmp/packer-output.txt | cut -d " " -f 12)
-      #     echo "$IMAGE_NAME" > packer-image-name.txt
-      # - name: Get Secret value
-      #   run: |
-      #     gcloud secrets versions access latest --secret=webapp-secret --format='value(payload.data)' > webapp-secret.json
-      # - name: Create Instance Template
-      #   run: |
-      #     JSON_DATA=$(cat webapp-secret.json)
-      #     IMAGE_NAME=$(cat packer-image-name.txt)
-      #     BOOT_DISK_TYPE=$(echo "$JSON_DATA" | jq -r '.boot_disk_type')
-      #     IMAGE_PROJECT=$(echo "$JSON_DATA" | jq -r '.image_project')
-      #     MACHINE_TYPE=$(echo "$JSON_DATA" | jq -r '.machine_type')
-      #     MAINTENANCE_POLICY=$(echo "$JSON_DATA" | jq -r '.maintenance_policy')
-      #     NETWORK=$(echo "$JSON_DATA" | jq -r '.network_interface.network')
-      #     SUBNETWORK=$(echo "$JSON_DATA" | jq -r '.network_interface.subnetwork')
-      #     REGION=$(echo "$JSON_DATA" | jq -r '.region')
-      #     SCOPES=$(echo "$JSON_DATA" | jq -r '.scope')
-      #     SERVICE_ACCOUNT=$(echo "$JSON_DATA" | jq -r '.service_account')
-      #     TAG=$(echo "$JSON_DATA" | jq -r '.tag')
-      #     KMS_KEY=$(echo "$JSON_DATA" | jq -r '.kms_key')
-      #     METADATA_STARTUP_SCRIPT=$(echo "$JSON_DATA" | jq -r '.metadata_startup_script')
-      #     gcloud compute instance-templates create webapp-instance-template-github \
-      #       --instance-template-region="$REGION" \
-      #       --tags="$TAG" \
-      #       --machine-type="$MACHINE_TYPE" \
-      #       --region="$REGION" \
-      #       --network-interface=network="$NETWORK",subnet="$SUBNETWORK" \
-      #       --service-account="$SERVICE_ACCOUNT" \
-      #       --scopes="$SCOPES" \
-      #       --maintenance-policy="$MAINTENANCE_POLICY" \
-      #       --image-project="$IMAGE_PROJECT" \
-      #       --image="$IMAGE_NAME" \
-      #       --boot-disk-type="$BOOT_DISK_TYPE" \
-      #       --boot-disk-kms-key="$KMS_KEY"\
-      #       --metadata=startup-script="$METADATA_STARTUP_SCRIPT"
+      - name: Build Packer Image
+        run: |
+          packer build -var-file=gcp-ami.pkrvars.hcl ./gcp-ami.pkr.hcl | tee /tmp/packer-output.txt
+          IMAGE_NAME=$(grep project /tmp/packer-output.txt | cut -d " " -f 12)
+          echo "$IMAGE_NAME" > packer-image-name.txt
+      - name: Get Secret value
+        run: |
+          gcloud secrets versions access latest --secret=webapp-secret --format='value(payload.data)' > webapp-secret.json
+      - name: Create Instance Template
+        run: |
+          JSON_DATA=$(cat webapp-secret.json)
+          IMAGE_NAME=$(cat packer-image-name.txt)
+          BOOT_DISK_TYPE=$(echo "$JSON_DATA" | jq -r '.boot_disk_type')
+          IMAGE_PROJECT=$(echo "$JSON_DATA" | jq -r '.image_project')
+          MACHINE_TYPE=$(echo "$JSON_DATA" | jq -r '.machine_type')
+          MAINTENANCE_POLICY=$(echo "$JSON_DATA" | jq -r '.maintenance_policy')
+          NETWORK=$(echo "$JSON_DATA" | jq -r '.network_interface.network')
+          SUBNETWORK=$(echo "$JSON_DATA" | jq -r '.network_interface.subnetwork')
+          REGION=$(echo "$JSON_DATA" | jq -r '.region')
+          SCOPES=$(echo "$JSON_DATA" | jq -r '.scope')
+          SERVICE_ACCOUNT=$(echo "$JSON_DATA" | jq -r '.service_account')
+          TAG=$(echo "$JSON_DATA" | jq -r '.tag')
+          KMS_KEY=$(echo "$JSON_DATA" | jq -r '.kms_key')
+          METADATA_STARTUP_SCRIPT=$(echo "$JSON_DATA" | jq -r '.metadata_startup_script')
+          gcloud compute instance-templates create webapp-instance-template-github \
+            --instance-template-region="$REGION" \
+            --tags="$TAG" \
+            --machine-type="$MACHINE_TYPE" \
+            --region="$REGION" \
+            --network-interface=network="$NETWORK",subnet="$SUBNETWORK" \
+            --service-account="$SERVICE_ACCOUNT" \
+            --scopes="$SCOPES" \
+            --maintenance-policy="$MAINTENANCE_POLICY" \
+            --image-project="$IMAGE_PROJECT" \
+            --image="$IMAGE_NAME" \
+            --boot-disk-type="$BOOT_DISK_TYPE" \
+            --boot-disk-kms-key="$KMS_KEY"\
+            --metadata=startup-script="$METADATA_STARTUP_SCRIPT"
       - name: Update Instance Group
         run : |
-          gcloud compute instance-groups managed rolling-action start-update compute-instance-group-manager \
-            --version=template=webapp-instance-template-github \
-            --region=us-east1
-      
+          gcloud compute instance-groups managed rolling-action start-update "compute-instance-group-manager" \
+            --version="project/nscc-prod-2404/regions/us-east1/instanceTemplates/template=webapp-instance-template-github" \
+            --region="us-east1"
+  
