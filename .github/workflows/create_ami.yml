@@ -77,6 +77,6 @@ jobs:
       - name: Update Instance Group
         run : |
           gcloud compute instance-groups managed rolling-action start-update "compute-instance-group-manager" \
-            --version="project/nscc-prod-2404/regions/us-east1/instanceTemplates/template=webapp-instance-template-github" \
+            --version=template="projects/nscc-prod-2404/regions/us-east1/instanceTemplates/webapp-instance-template-github" \
             --region="us-east1"
   
