@@ -10,7 +10,7 @@ jobs:
   Packer_Validation_WorkFlow:
     runs-on: ubuntu-latest
     outputs:
-      timestamp: ${{ steps.createts.outputs.timestamp }
+      timestamp: ${{ steps.createts.outputs.timestamp }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
