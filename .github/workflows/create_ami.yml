@@ -9,6 +9,8 @@ on:
 jobs:
   Packer_Validation_WorkFlow:
     runs-on: ubuntu-latest
+    outputs:
+      timestamp: ${{ steps.createts.outputs.timestamp }
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -44,7 +46,8 @@ jobs:
       - name: Get Secret value
         run: |
           gcloud secrets versions access latest --secret=webapp-secret --format='value(payload.data)' > webapp-secret.json
-      - name: Create_Instance_Template
+      - name: Create Instance Template
+        id: createts
         run: |
           timestamp=$(date +%Y%m%d%H%M)
           JSON_DATA=$(cat webapp-secret.json)
@@ -75,10 +78,10 @@ jobs:
             --boot-disk-type="$BOOT_DISK_TYPE" \
             --boot-disk-kms-key="$KMS_KEY"\
             --metadata=startup-script="$METADATA_STARTUP_SCRIPT"
-          echo "::set-output name=timestamp::$timestamp"
+          echo "timestamp=$timestamp" >> $GITHUB_OUTPUT
       - name: Update Instance Group
         run : |
-          timestamp=${{ steps.Create_Instance_Template.outputs.timestamp }}
+          timestamp=${{ steps.createts.outputs.timestamp }}
           JSON_DATA=$(cat webapp-secret.json)
           PROJECT_NAME=$(echo "$JSON_DATA" | jq -r '.image_project')
           REGION=$(echo "$JSON_DATA" | jq -r '.region')
