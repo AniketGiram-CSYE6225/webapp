@@ -46,6 +46,7 @@ jobs:
           gcloud secrets versions access latest --secret=webapp-secret --format='value(payload.data)' > webapp-secret.json
       - name: Create Instance Template
         run: |
+          timestamp=$(date +%Y%m%d%H%M)
           JSON_DATA=$(cat webapp-secret.json)
           IMAGE_NAME=$(cat packer-image-name.txt)
           BOOT_DISK_TYPE=$(echo "$JSON_DATA" | jq -r '.boot_disk_type')
@@ -60,7 +61,7 @@ jobs:
           TAG=$(echo "$JSON_DATA" | jq -r '.tag')
           KMS_KEY=$(echo "$JSON_DATA" | jq -r '.kms_key')
           METADATA_STARTUP_SCRIPT=$(echo "$JSON_DATA" | jq -r '.metadata_startup_script')
-          gcloud compute instance-templates create webapp-instance-template-github \
+          gcloud compute instance-templates create webapp-instance-template-github-$timestamp \
             --instance-template-region="$REGION" \
             --tags="$TAG" \
             --machine-type="$MACHINE_TYPE" \
@@ -80,13 +81,13 @@ jobs:
           PROJECT_NAME=$(echo "$JSON_DATA" | jq -r '.image_project')
           REGION=$(echo "$JSON_DATA" | jq -r '.region')
           gcloud compute instance-groups managed rolling-action start-update "compute-instance-group-manager" \
-            --version=template="projects/$PROJECT_NAME/regions/$REGION/instanceTemplates/webapp-instance-template-github" \
+            --version=template="projects/$PROJECT_NAME/regions/$REGION/instanceTemplates/webapp-instance-template-github-$timestamp" \
             --region="$REGION"
       - name: Wait Until Instance Group is not healthy
         run : |
           JSON_DATA=$(cat webapp-secret.json)
           REGION=$(echo "$JSON_DATA" | jq -r '.region')
-          gcloud compute instance-groups managed wait-until compute-instance-group-manager \
+          timeout 10m gcloud compute instance-groups managed wait-until compute-instance-group-manager \
             --version-target-reached \
             --region="$REGION"
   
