@@ -19,7 +19,7 @@ router.get("/", async (request, response) => {
         const password = data[1]
         const _user = await User.findOne({ where: { username: username } });
         if (_user === null) {
-            logger.debug(`User ${_user['username']} is not present in the db`)
+            logger.debug(`User ${username} is not present in the db`)
             logger.error(`User not found.`);
             return response.status(401).send()
         } else {
@@ -89,7 +89,7 @@ router.put("/", async (request, response) => {
         const userData = updateUserBody.safeParse(request.body)
         if (!userData.success) {
             logger.error(`Error in payload. Cannot update the user.`);
-            return response.status(400).send()
+            return response.status(401).send()
         }
         logger.debug("Reading user auth tokens")
         data = decodeBase64(data.authorization.split(" ")[1])
@@ -97,9 +97,9 @@ router.put("/", async (request, response) => {
         const password = data[1]
         const _user = await User.findOne({ where: { username: username } });
         if (_user === null) {
-            logger.debug(`User ${_user['username']} is not present in the db`)
+            logger.debug(`User ${username} is not present in the db`)
             logger.error(`User not found. Update failed`);
-            return response.status(400).send()
+            return response.status(401).send()
         } else {
             const isUserValid = await checkHashedPassword(password, _user.password)
             if (!isUserValid) {
