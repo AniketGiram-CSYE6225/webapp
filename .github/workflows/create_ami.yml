@@ -59,7 +59,7 @@ jobs:
           SERVICE_ACCOUNT=$(echo "$JSON_DATA" | jq -r '.service_account')
           TAG=$(echo "$JSON_DATA" | jq -r '.tag')
           METADATA_STARTUP_SCRIPT=$(echo "$JSON_DATA" | jq -r '.metadata_startup_script')
-          gcloud compute instance-templates create webapp-from-git-temp \
+          gcloud compute instance-templates create webapp-instance-template-github \
             --instance-template-region="$REGION" \
             --tags="$TAG" \
             --machine-type="$MACHINE_TYPE" \
@@ -72,3 +72,9 @@ jobs:
             --image="$IMAGE_NAME" \
             --boot-disk-type="$BOOT_DISK_TYPE" \
             --metadata=startup-script="$METADATA_STARTUP_SCRIPT"
+      - name: Update Instance Group
+        run : |
+          gcloud compute instance-groups managed rolling-action start-update compute-instance-group-manager \
+          --version=template=webapp-instance-template-github \
+          --region=us-east1
+      
