@@ -36,14 +36,16 @@ jobs:
         run: "packer fmt -var-file=gcp-ami.pkrvars.hcl ./gcp-ami.pkr.hcl"
       - name: Run `packer validate`
         run: "packer validate -var-file=gcp-ami.pkrvars.hcl ./gcp-ami.pkr.hcl"
-      # - name: Build Packer Image
-      #   run: "packer build -var-file=gcp-ami.pkrvars.hcl ./gcp-ami.pkr.hcl"
+      - name: Build Packer Image
+        run: |
+          "packer build -var-file=gcp-ami.pkrvars.hcl ./gcp-ami.pkr.hcl . | grep project | cut -d " " -f 12" > packer-image-name.txt
       - name: Get Secret value
         run: |
           gcloud secrets versions access latest --secret=webapp-secret --format='value(payload.data)' > webapp-secret.json
       - name: Create Instance Template
         run: |
           JSON_DATA=$(cat webapp-secret.json)
+          IMAGE_NAME=$(cat packer-image-name.txt)
           BOOT_DISK_TYPE=$(echo "$JSON_DATA" | jq -r '.boot_disk_type')
           IMAGE_PROJECT=$(echo "$JSON_DATA" | jq -r '.image_project')
           MACHINE_TYPE=$(echo "$JSON_DATA" | jq -r '.machine_type')
@@ -65,6 +67,6 @@ jobs:
             --scopes="$SCOPES" \
             --maintenance-policy="$MAINTENANCE_POLICY" \
             --image-project="$IMAGE_PROJECT" \
-            --image-family="nscc-custom-image" \
+            --image="$IMAGE_NAME" \
             --boot-disk-type="$BOOT_DISK_TYPE" \
             --metadata=startup-script="$METADATA_STARTUP_SCRIPT"
