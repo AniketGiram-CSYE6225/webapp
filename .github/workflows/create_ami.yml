@@ -76,7 +76,10 @@ jobs:
             --metadata=startup-script="$METADATA_STARTUP_SCRIPT"
       - name: Update Instance Group
         run : |
+          JSON_DATA=$(cat webapp-secret.json)
+          PROJECT_NAME=$(echo "$JSON_DATA" | jq -r '.image_project')
+          REGION=$(echo "$JSON_DATA" | jq -r '.region')
           gcloud compute instance-groups managed rolling-action start-update "compute-instance-group-manager" \
-            --version=template="projects/nscc-prod-2404/regions/us-east1/instanceTemplates/webapp-instance-template-github" \
-            --region="us-east1"
+            --version=template="projects/$PROJECT_NAME/regions/$REGION/instanceTemplates/webapp-instance-template-github" \
+            --region="$REGION"
   
