@@ -65,7 +65,7 @@ jobs:
             --tags="$TAG" \
             --machine-type="$MACHINE_TYPE" \
             --region="$REGION" \
-            --network-interface=network="$NETWORK",subnet="$SUBNETWORK" \
+            --network-interface=network="$NETWORK",subnet="$SUBNETWORK",no-address \
             --service-account="$SERVICE_ACCOUNT" \
             --scopes="$SCOPES" \
             --maintenance-policy="$MAINTENANCE_POLICY" \
@@ -87,6 +87,6 @@ jobs:
           JSON_DATA=$(cat webapp-secret.json)
           REGION=$(echo "$JSON_DATA" | jq -r '.region')
           gcloud compute instance-groups managed wait-until compute-instance-group-manager \
-          --version-target-reached \
-          --region="$REGION"
+            --version-target-reached \
+            --region="$REGION"
   
