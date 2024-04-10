@@ -38,7 +38,9 @@ jobs:
         run: "packer validate -var-file=gcp-ami.pkrvars.hcl ./gcp-ami.pkr.hcl"
       - name: Build Packer Image
         run: |
-          packer build -var-file=gcp-ami.pkrvars.hcl ./gcp-ami.pkr.hcl . | grep project | cut -d " " -f 12 > packer-image-name.txt
+          packer build -var-file=gcp-ami.pkrvars.hcl ./gcp-ami.pkr.hcl | tee /tmp/packer-output.txt
+          IMAGE_NAME=$(grep -oP '(?<=artifact,0,id=).*' /tmp/packer-output.txt)
+          echo "$IMAGE_NAME" > packer-image-name.txt
       - name: Get Secret value
         run: |
           gcloud secrets versions access latest --secret=webapp-secret --format='value(payload.data)' > webapp-secret.json
