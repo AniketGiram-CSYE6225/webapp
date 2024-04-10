@@ -1,9 +1,7 @@
 name: Create GCP AMI CI
 
 on:
-  # push:
-  #   branches: [ main ]
-  pull_request:
+  push:
     branches: [ main ]
 
 jobs:
