@@ -37,7 +37,22 @@ jobs:
       - name: Run `packer validate`
         run: "packer validate -var-file=gcp-ami.pkrvars.hcl ./gcp-ami.pkr.hcl"
       - name: Build Packer Image
+        run: "packer build -var-file=gcp-ami.pkrvars.hcl ./gcp-ami.pkr.hcl"
+      - name: Get Secre value
         run: |
-          AMI_ID=$(packer build -var-file=gcp-ami.pkrvars.hcl ./gcp-ami.pkr.hcl | awk -F, '$0 ~/artifact,0,id/ {print $6}')
-          echo "AMI_ID is =$AMI_ID" >> $GITHUB_ENV
-          echo "::set-output name=ami_id::$AMI_ID"
+          echo gcloud secrets versions access latest --secret=webapp-secret > webapp-secret.json
+          cat webapp-secret.json
+      - name: Create Instance Template
+        run: |
+           gcloud compute instance-templates create webapp-from-git-temp \
+            --instance-template-region="us-east1" \
+            --tags="webapp" \
+            --machine-type="n2-standard-2" \
+            --region="us-east1" \
+            --network-interface=network="nscc",subnet="webapp" \
+            --service-account="nscc-service@nscc-prod-2404.iam.gserviceaccount.com" \
+            --scopes=logging-write,monitoring-read,monitoring-write,pubsub \
+            --maintenance-policy="MIGRATE" \
+            --image-project="nscc-prod-2404" \
+            --image-family="nscc-custom-image" \
+            --boot-disk-type="pd-standard"
