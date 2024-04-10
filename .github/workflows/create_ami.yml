@@ -82,4 +82,11 @@ jobs:
           gcloud compute instance-groups managed rolling-action start-update "compute-instance-group-manager" \
             --version=template="projects/$PROJECT_NAME/regions/$REGION/instanceTemplates/webapp-instance-template-github" \
             --region="$REGION"
+      - name: Wait Until Instance Group is not healthy
+        run : |
+          JSON_DATA=$(cat webapp-secret.json)
+          REGION=$(echo "$JSON_DATA" | jq -r '.region')
+          gcloud compute instance-groups managed wait-until compute-instance-group-manager \
+          --version-target-reached \
+          --region="$REGION"
   
