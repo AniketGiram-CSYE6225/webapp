@@ -92,7 +92,13 @@ jobs:
         run : |
           JSON_DATA=$(cat webapp-secret.json)
           REGION=$(echo "$JSON_DATA" | jq -r '.region')
-          timeout 10m gcloud compute instance-groups managed wait-until compute-instance-group-manager \
-            --version-target-reached \
-            --region="$REGION"
+          end=$((SECONDS+600)) # 10 minutes from now
+          while [ $SECONDS -lt $end ]; do
+            if gcloud compute instance-groups managed describe compute-instance-group-manager --region="$REGION" | grep -q "versionTargetReached"; then
+              echo "Version target reached."
+              break
+            fi
+            echo "Waiting for version target to be reached..."
+            sleep 2
+          done
   
