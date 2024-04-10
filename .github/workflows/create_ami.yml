@@ -38,21 +38,31 @@ jobs:
         run: "packer validate -var-file=gcp-ami.pkrvars.hcl ./gcp-ami.pkr.hcl"
       - name: Build Packer Image
         run: "packer build -var-file=gcp-ami.pkrvars.hcl ./gcp-ami.pkr.hcl"
-      - name: Get Secre value
+      - name: Get Secret value
         run: |
-          echo gcloud secrets versions access latest --secret=webapp-secret > webapp-secret.json
-          cat webapp-secret.json
+          gcloud secrets versions access latest --secret=webapp-secret --format='value(payload.data)' > webapp-secret.json
       - name: Create Instance Template
         run: |
-           gcloud compute instance-templates create webapp-from-git-temp \
-            --instance-template-region="us-east1" \
-            --tags="webapp" \
-            --machine-type="n2-standard-2" \
-            --region="us-east1" \
-            --network-interface=network="nscc",subnet="webapp" \
-            --service-account="nscc-service@nscc-prod-2404.iam.gserviceaccount.com" \
-            --scopes=logging-write,monitoring-read,monitoring-write,pubsub \
-            --maintenance-policy="MIGRATE" \
-            --image-project="nscc-prod-2404" \
+          JSON_DATA=$(cat webapp-secret.json)
+          BOOT_DISK_TYPE=$(echo "$JSON_DATA" | jq -r '.boot_disk_type')
+          IMAGE_PROJECT=$(echo "$JSON_DATA" | jq -r '.image_project')
+          MACHINE_TYPE=$(echo "$JSON_DATA" | jq -r '.machine_type')
+          MAINTENANCE_POLICY=$(echo "$JSON_DATA" | jq -r '.maintenance_policy')
+          NETWORK=$(echo "$JSON_DATA" | jq -r '.network_interface.network')
+          SUBNETWORK=$(echo "$JSON_DATA" | jq -r '.network_interface.subnetwork')
+          REGION=$(echo "$JSON_DATA" | jq -r '.region')
+          SCOPES=$(echo "$JSON_DATA" | jq -r '.scope')
+          SERVICE_ACCOUNT=$(echo "$JSON_DATA" | jq -r '.service_account')
+          TAG=$(echo "$JSON_DATA" | jq -r '.tag')
+          gcloud compute instance-templates create webapp-from-git-temp \
+            --instance-template-region="$REGION" \
+            --tags="$TAG" \
+            --machine-type="$MACHINE_TYPE" \
+            --region="$REGION" \
+            --network-interface=network="$NETWORK",subnet="$SUBNETWORK" \
+            --service-account="$SERVICE_ACCOUNT" \
+            --scopes="$SCOPES" \
+            --maintenance-policy="$MAINTENANCE_POLICY" \
+            --image-project="$IMAGE_PROJECT" \
             --image-family="nscc-custom-image" \
-            --boot-disk-type="pd-standard"
+            --boot-disk-type="$BOOT_DISK_TYPE"
