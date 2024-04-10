@@ -39,7 +39,7 @@ jobs:
       - name: Build Packer Image
         run: |
           packer build -var-file=gcp-ami.pkrvars.hcl ./gcp-ami.pkr.hcl | tee /tmp/packer-output.txt
-          IMAGE_NAME=$(grep -oP '(?<=artifact,0,id=).*' /tmp/packer-output.txt)
+          IMAGE_NAME=$(grep -oP "googlecompute.custom-image-ami:.*" /tmp/packer-output.txt | cut -d ' ' -f 6)
           echo "$IMAGE_NAME" > packer-image-name.txt
       - name: Get Secret value
         run: |
