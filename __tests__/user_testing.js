@@ -11,7 +11,7 @@ describe("Get /healtz", () => {
     })
 })
 
-describe("Post /v1/user", () => {
+describe("Post /v2/user", () => {
     test("Create user in database", async () => {
         const payload = {
             "first_name": "userfirstname",
@@ -19,7 +19,7 @@ describe("Post /v1/user", () => {
             "username": "user@abc.com",
             "password": "ABC@123"
         }
-        const createdUser = await requestWithSupertest.post("/v1/user")
+        const createdUser = await requestWithSupertest.post("/v2/user")
             .send(payload)
             .set('Content-Type', 'application/json')
             .set('Accept', 'application/json')
@@ -27,16 +27,16 @@ describe("Post /v1/user", () => {
 
         await EmailTrack.create({ userId: createdUser.body['id'], emailStatus: "EMAIL_SENT", email_expiry_time: new Date(new Date().getTime() + (2 * 60 * 1000))})
 
-        const updateUserStatus = await requestWithSupertest.get(`/v1/userVerification?username=${createdUser.body['username']}&userId=${createdUser.body['id']}&firstName=${createdUser.body['first_name']}`)
+        const updateUserStatus = await requestWithSupertest.get(`/v2/userVerification?username=${createdUser.body['username']}&userId=${createdUser.body['id']}&firstName=${createdUser.body['first_name']}`)
         expect(updateUserStatus.statusCode).toBe(200)
 
-        const duplicateUser = await requestWithSupertest.post("/v1/user")
+        const duplicateUser = await requestWithSupertest.post("/v2/user")
             .send(payload)
             .set('Content-Type', 'application/json')
             .set('Accept', 'application/json')
         expect(duplicateUser.statusCode).toBe(400)
 
-        const getUser = await requestWithSupertest.get("/v1/user").set('Authorization', `Basic ${btoa(`${payload.username}:${payload.password}`)}`)
+        const getUser = await requestWithSupertest.get("/v2/user").set('Authorization', `Basic ${btoa(`${payload.username}:${payload.password}`)}`)
         expect(getUser.statusCode).toBe(200)
 
         expect(createdUser.body['first_name']).toBe(getUser.body['first_name'])
@@ -45,7 +45,7 @@ describe("Post /v1/user", () => {
     })
 })
 
-describe("Put /v1/user", () => {
+describe("Put /v2/user", () => {
     test("Update user in database", async () => {
         const payload = {
             "first_name": "userfirstname_updated",
@@ -58,17 +58,17 @@ describe("Put /v1/user", () => {
             "password": "ABC@123"
         }
 
-        const updateUser = await requestWithSupertest.put("/v1/user")
+        const updateUser = await requestWithSupertest.put("/v2/user")
             .send(payload)
             .set('Content-Type', 'application/json')
             .set('Accept', 'application/json')
             .set('Authorization', `Basic ${btoa(`${auth.username}:${auth.password}`)}`)
         expect(updateUser.statusCode).toBe(204)
 
-        const getUserWithWrongCredential = await requestWithSupertest.get("/v1/user").set('Authorization', `Basic ${btoa(`${auth.username}:${payload.password}`)}`)
+        const getUserWithWrongCredential = await requestWithSupertest.get("/v2/user").set('Authorization', `Basic ${btoa(`${auth.username}:${payload.password}`)}`)
         expect(getUserWithWrongCredential.statusCode).toBe(200)
 
-        const getUserWithCredential = await requestWithSupertest.get("/v1/user").set('Authorization', `Basic ${btoa(`${auth.username}:${auth.password}`)}`)
+        const getUserWithCredential = await requestWithSupertest.get("/v2/user").set('Authorization', `Basic ${btoa(`${auth.username}:${auth.password}`)}`)
         expect(getUserWithCredential.statusCode).toBe(401)
     })
 })

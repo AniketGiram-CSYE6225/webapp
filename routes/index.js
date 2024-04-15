@@ -5,7 +5,7 @@ import userVerificationRoute from './userVerificationRoute.js'
 const router = express.Router()
 
 router.use("/healthz", healthzRoute)
-router.use("/v1/user", userRoute)
-router.use("/v1/userVerification", userVerificationRoute)
+router.use("/v2/user", userRoute)
+router.use("/v2/userVerification", userVerificationRoute)
 
 export default router
