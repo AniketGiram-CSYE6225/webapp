@@ -8,7 +8,7 @@ app.use(express.json())
 app.use(middlewares)
 
 app.use((req, res, next) => {
-    if (req.path === '/v1/userVerification') {
+    if (req.path === '/v2/userVerification') {
         return next();
     }
     if (Object.keys(req.query).length > 0) {
